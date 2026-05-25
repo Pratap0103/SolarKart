@@ -5,7 +5,7 @@ import {
   TrendingUp,
   Wrench,
   FileText,
-  HelpCircle,
+  Play,
   Bell,
   Award,
   MessageSquare,
@@ -14,17 +14,19 @@ import {
   Shield,
   User,
   Lock,
-  X
+  X,
+  BatteryCharging
 } from 'lucide-react';
 
 export default function Sidebar({ activePage, onPageChange, role, unreadNotifCount, isOpen, onClose }) {
   const pages = [
     { id: 'dashboard', label: 'Dashboard', icon: Sun },
+    { id: 'usage', label: 'Power Usage', icon: BatteryCharging },
     { id: 'analytics', label: 'Energy Analytics', icon: Activity },
     { id: 'savings', label: 'Savings & ROI', icon: TrendingUp },
     { id: 'services', label: 'Service & Complaint', icon: Wrench },
     { id: 'documents', label: 'Document Center', icon: FileText },
-    { id: 'learning', label: 'Learning Center', icon: HelpCircle },
+    { id: 'care_panel', label: 'Solar Care Panel', icon: Play },
     { id: 'notifications', label: 'Notifications', icon: Bell, badgeCount: unreadNotifCount },
     { id: 'referrals', label: 'Referral System', icon: Award },
     { id: 'ai_assistant', label: 'AI Solar Assistant', icon: MessageSquare },
@@ -33,6 +35,7 @@ export default function Sidebar({ activePage, onPageChange, role, unreadNotifCou
     { id: 'amc', label: 'AMC Management', icon: Shield },
     { id: 'profile', label: 'Profile Spec', icon: User }
   ];
+
 
   return (
     <>

@@ -18,7 +18,8 @@ export default function AdminDashboard({
   onUpdateStatus,
   onAddVisit,
   onCloseTicket,
-  showToast
+  showToast,
+  customers
 }) {
   const [selectedTicketId, setSelectedTicketId] = useState(null);
   const [modals, setModals] = useState({
@@ -40,6 +41,19 @@ export default function AdminDashboard({
 
   const selectedTicket = tickets.find(t => t.ticketId === selectedTicketId) || 
                          historyTickets.find(t => t.ticketId === selectedTicketId);
+
+  const selectedTicketCustomer = selectedTicket ? (customers?.find(c => c.customerId === selectedTicket.customerId) || {
+    profile: {
+      customerName: selectedTicket.customerName || "Aarav Sharma",
+      mobileNumber: selectedTicket.customerMobile || "+91 98765 43210",
+      plantCapacity: "5.4 kWp",
+      plantType: "On-Grid Rooftop",
+      address: "Flat 402, Green Meadows, Sector 15, Gurgaon",
+      inverterBrand: "SolarKart Hybrid Smart Inverter 6kVA",
+      panelBrand: "SolarKart Mono-Perc Half Cut 540W",
+      installationDate: "March 15, 2024"
+    }
+  }) : null;
 
   // Form states
   const [assignForm, setAssignForm] = useState({
@@ -96,8 +110,8 @@ export default function AdminDashboard({
     <div>
       {/* KPI Cards Grid */}
       <div className="stats-grid">
-        <StatCard label="Total Customers" value="1,248 Users" desc="Active solar plants registered" />
-        <StatCard label="Total Active Plants" value="6.82 MW" desc="Cumulative monitored capacity" />
+        <StatCard label="Total Customers" value={`${customers?.length || 1} Users`} desc="Active solar plants registered" />
+        <StatCard label="Total Active Plants" value={customers ? `${customers.reduce((acc, curr) => acc + parseFloat(curr.profile.plantCapacity), 0).toFixed(1)} kW` : "18.6 kW"} desc="Cumulative monitored capacity" />
       </div>
 
       <div className="stats-grid">
@@ -106,7 +120,7 @@ export default function AdminDashboard({
       </div>
 
       <div className="stats-grid">
-        <StatCard label="AMC Due" value="14 Renewals" desc="Contracts expiring within 30 days" />
+        <StatCard label="AMC Due" value="1 Renewals" desc="Contracts expiring within 30 days" />
         <StatCard label="Low Performing Systems" value="2 Plants" desc="Generating under 60% capacity alert" borderLeft="4px solid var(--warning)" />
       </div>
 
@@ -126,70 +140,79 @@ export default function AdminDashboard({
               </td>
             </tr>
           ) : (
-            tickets.map((t) => (
-              <tr key={t.ticketId}>
-                <td style={{ fontWeight: 'bold' }}>{t.ticketId}</td>
-                <td style={{ fontWeight: 'bold' }}>R. K. Sharma</td>
-                <td>+91 98765 43210</td>
-                <td>10.0 kW</td>
-                <td>
-                  <div style={{ fontWeight: 'bold', color: 'var(--dark-blue)' }}>{t.title}</div>
-                  <div style={{ fontSize: '9px', color: 'var(--gray-text)' }}>Category: {t.category}</div>
-                </td>
-                <td><Badge type={t.priority}>{t.priority}</Badge></td>
-                <td><Badge type={t.status}>{t.status}</Badge></td>
-                <td>{t.assignedEngineer || <span style={{ color: 'var(--gray-text)' }}>Unassigned</span>}</td>
-                <td style={{ fontSize: '11px' }}>{t.createdDate}</td>
-                <td>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openModalWithId('viewCustomer', t.ticketId)}
-                      title="View Customer Info"
-                      style={{ padding: '4px 6px' }}
-                    >
-                      <Eye size={12} />
-                    </button>
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openModalWithId('assignEngineer', t.ticketId)}
-                      title="Assign Engineer"
-                      style={{ padding: '4px 6px' }}
-                    >
-                      <UserPlus size={12} />
-                    </button>
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openModalWithId('updateStatus', t.ticketId)}
-                      title="Update Status"
-                      style={{ padding: '4px 6px' }}
-                    >
-                      <RefreshCw size={12} />
-                    </button>
-                    {t.status === 'Assigned' && (
+            tickets.map((t) => {
+              const cust = customers?.find(c => c.customerId === t.customerId) || {
+                profile: {
+                  customerName: t.customerName || "Aarav Sharma",
+                  mobileNumber: t.customerMobile || "+91 98765 43210",
+                  plantCapacity: "5.4 kWp"
+                }
+              };
+              return (
+                <tr key={t.ticketId}>
+                  <td style={{ fontWeight: 'bold' }}>{t.ticketId}</td>
+                  <td style={{ fontWeight: 'bold' }}>{cust.profile.customerName}</td>
+                  <td>{cust.profile.mobileNumber}</td>
+                  <td>{cust.profile.plantCapacity}</td>
+                  <td>
+                    <div style={{ fontWeight: 'bold', color: 'var(--dark-blue)' }}>{t.title}</div>
+                    <div style={{ fontSize: '9px', color: 'var(--gray-text)' }}>Category: {t.category}</div>
+                  </td>
+                  <td><Badge type={t.priority}>{t.priority}</Badge></td>
+                  <td><Badge type={t.status}>{t.status}</Badge></td>
+                  <td>{t.assignedEngineer || <span style={{ color: 'var(--gray-text)' }}>Unassigned</span>}</td>
+                  <td style={{ fontSize: '11px' }}>{t.createdDate}</td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '4px' }}>
                       <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => openModalWithId('addVisit', t.ticketId)}
-                        title="Add Visit Report"
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => openModalWithId('viewCustomer', t.ticketId)}
+                        title="View Customer Info"
                         style={{ padding: '4px 6px' }}
                       >
-                        <Clipboard size={12} />
+                        <Eye size={12} />
                       </button>
-                    )}
-                    {t.status === 'Resolved' && (
                       <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => openModalWithId('closeTicket', t.ticketId)}
-                        title="Close Ticket"
-                        style={{ padding: '4px 6px', color: '#fff' }}
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => openModalWithId('assignEngineer', t.ticketId)}
+                        title="Assign Engineer"
+                        style={{ padding: '4px 6px' }}
                       >
-                        <CheckSquare size={12} />
+                        <UserPlus size={12} />
                       </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => openModalWithId('updateStatus', t.ticketId)}
+                        title="Update Status"
+                        style={{ padding: '4px 6px' }}
+                      >
+                        <RefreshCw size={12} />
+                      </button>
+                      {t.status === 'Assigned' && (
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => openModalWithId('addVisit', t.ticketId)}
+                          title="Add Visit Report"
+                          style={{ padding: '4px 6px' }}
+                        >
+                          <Clipboard size={12} />
+                        </button>
+                      )}
+                      {t.status === 'Resolved' && (
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() => openModalWithId('closeTicket', t.ticketId)}
+                          title="Close Ticket"
+                          style={{ padding: '4px 6px', color: '#fff' }}
+                        >
+                          <CheckSquare size={12} />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
           )}
         </Table>
       </div>
@@ -198,58 +221,63 @@ export default function AdminDashboard({
       <div className="card" style={{ padding: '10px 0', marginTop: '20px' }}>
         <h3 style={{ fontSize: '15px', padding: '10px 20px 8px' }}>Archived Global Service Log</h3>
         <Table headers={['Ticket ID', 'Customer Name', 'Complaint Subject', 'Category', 'Priority', 'Assigned Engineer', 'Closed Date', 'Rating']}>
-          {historyTickets.map((t) => (
-            <tr key={t.ticketId}>
-              <td style={{ fontWeight: 'bold' }}>{t.ticketId}</td>
-              <td>R. K. Sharma</td>
-              <td>{t.title}</td>
-              <td>{t.category}</td>
-              <td><Badge type={t.priority}>{t.priority}</Badge></td>
-              <td>{t.assignedEngineer || 'Staff'}</td>
-              <td style={{ fontSize: '12px' }}>{t.closedDate}</td>
-              <td>
-                <div style={{ display: 'flex', color: '#F59E0B' }}>
-                  {[...Array(t.customerRating)].map((_, i) => (
-                    <Award key={i} size={12} fill="#F59E0B" color="#F59E0B" />
-                  ))}
-                </div>
-              </td>
-            </tr>
-          ))}
+          {historyTickets.map((t) => {
+            const cust = customers?.find(c => c.customerId === t.customerId) || {
+              profile: { customerName: t.customerName || "Aarav Sharma" }
+            };
+            return (
+              <tr key={t.ticketId}>
+                <td style={{ fontWeight: 'bold' }}>{t.ticketId}</td>
+                <td>{cust.profile.customerName}</td>
+                <td>{t.title}</td>
+                <td>{t.category}</td>
+                <td><Badge type={t.priority}>{t.priority}</Badge></td>
+                <td>{t.assignedEngineer || 'Staff'}</td>
+                <td style={{ fontSize: '12px' }}>{t.closedDate}</td>
+                <td>
+                  <div style={{ display: 'flex', color: '#F59E0B' }}>
+                    {[...Array(t.customerRating)].map((_, i) => (
+                      <Award key={i} size={12} fill="#F59E0B" color="#F59E0B" />
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </Table>
       </div>
 
       {/* MODAL 1: VIEW CUSTOMER INFORMATION */}
       <Modal isOpen={modals.viewCustomer} onClose={() => toggleModal('viewCustomer', false)} title="Customer Installation Info">
-        {selectedTicket && (
+        {selectedTicketCustomer && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
             <div className="info-row">
               <span className="info-label">Customer Name</span>
-              <span className="info-value" style={{ fontWeight: 'bold' }}>R. K. Sharma</span>
+              <span className="info-value" style={{ fontWeight: 'bold' }}>{selectedTicketCustomer?.profile?.customerName}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Mobile Number</span>
-              <span className="info-value">+91 98765 43210</span>
+              <span className="info-value">{selectedTicketCustomer?.profile?.mobileNumber}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Installed Capacity</span>
-              <span className="info-value" style={{ color: 'var(--primary-green)', fontWeight: 'bold' }}>10.0 kW On-Grid</span>
+              <span className="info-value" style={{ color: 'var(--primary-green)', fontWeight: 'bold' }}>{selectedTicketCustomer?.profile?.plantCapacity} {selectedTicketCustomer?.profile?.plantType}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Address</span>
-              <span className="info-value">Flat 402, Green Meadows, Baner, Pune</span>
+              <span className="info-value">{selectedTicketCustomer?.profile?.address}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Inverter Brand</span>
-              <span className="info-value">Solax Smart Inverter 10 kW</span>
+              <span className="info-value">{selectedTicketCustomer?.profile?.inverterBrand}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Panel Brand</span>
-              <span className="info-value">SolarKart Perc Monocrystalline Panels</span>
+              <span className="info-value">{selectedTicketCustomer?.profile?.panelBrand}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Installation Date</span>
-              <span className="info-value">March 15, 2024</span>
+              <span className="info-value">{selectedTicketCustomer?.profile?.installationDate}</span>
             </div>
             
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>

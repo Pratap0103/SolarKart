@@ -1,12 +1,12 @@
 import React from 'react';
-import { Sun, Activity, Wrench, HelpCircle, User } from 'lucide-react';
+import { Sun, Activity, Wrench, Play, User } from 'lucide-react';
 
 export default function BottomNavigation({ activeTab, onTabChange }) {
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: Sun },
     { id: 'analytics', label: 'Analytics', icon: Activity },
     { id: 'services', label: 'Services', icon: Wrench },
-    { id: 'learning', label: 'Learning', icon: HelpCircle },
+    { id: 'care_panel', label: 'Care Panel', icon: Play },
     { id: 'profile', label: 'Profile', icon: User }
   ];
 

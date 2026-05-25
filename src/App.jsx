@@ -12,7 +12,7 @@ import Analytics from './pages/Analytics';
 import Savings from './pages/Savings';
 import ServiceComplaint from './pages/ServiceComplaint';
 import DocumentCenter from './pages/DocumentCenter';
-import LearningCenter from './pages/LearningCenter';
+import CarePanel from './pages/CarePanel';
 import NotificationsPage from './pages/NotificationsPage';
 import ReferralSystem from './pages/ReferralSystem';
 import AISolarAssistant from './pages/AISolarAssistant';
@@ -21,6 +21,7 @@ import PlantHealth from './pages/PlantHealth';
 import AMCManagement from './pages/AMCManagement';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import Usage from './pages/Usage';
 
 // Mock initial data sources
 import {
@@ -33,11 +34,21 @@ import {
   initialNotifications,
   initialEngineers,
   initialTickets,
-  initialHistoryTickets
+  initialHistoryTickets,
+  initialCustomers
 } from './dummyData';
 
 export default function App() {
   // --- CORE APP STATE ---
+  const [customers, setCustomers] = useState(() => {
+    const saved = localStorage.getItem('sk_customers');
+    return saved ? JSON.parse(saved) : initialCustomers;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sk_customers', JSON.stringify(customers));
+  }, [customers]);
+
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('sk_user');
     return saved ? JSON.parse(saved) : null;
@@ -91,6 +102,16 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState([
     { sender: 'ai', text: 'Namaste! Welcome to SolarKart AI Assistant. How can I help you optimize your solar energy generation today? (You can toggle language/Hindi below)', time: 'Just now' }
   ]);
+
+  const [lastCleanedDate, setLastCleanedDate] = useState(() => {
+    const saved = localStorage.getItem('sk_last_cleaned_date');
+    return saved ? saved : 'May 20, 2026';
+  });
+
+  const [nextCleanedDate, setNextCleanedDate] = useState(() => {
+    const saved = localStorage.getItem('sk_next_cleaned_date');
+    return saved ? saved : 'June 04, 2026';
+  });
 
   // --- UI NAVIGATION & TOAST STATES ---
   const [activePage, setActivePage] = useState('dashboard');
@@ -165,6 +186,29 @@ export default function App() {
     localStorage.setItem('sk_weather', JSON.stringify(weather));
   }, [weather]);
 
+  useEffect(() => {
+    localStorage.setItem('sk_last_cleaned_date', lastCleanedDate);
+  }, [lastCleanedDate]);
+
+  useEffect(() => {
+    localStorage.setItem('sk_next_cleaned_date', nextCleanedDate);
+  }, [nextCleanedDate]);
+
+  const handleMarkCleaned = () => {
+    const today = new Date();
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    const formattedToday = today.toLocaleDateString('en-US', options);
+    
+    const nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + 15);
+    const formattedNext = nextDate.toLocaleDateString('en-US', options);
+    
+    setLastCleanedDate(formattedToday);
+    setNextCleanedDate(formattedNext);
+    
+    showToast("Solar panels marked as fully cleaned!", "success");
+  };
+
   // --- HELPER HANDLERS ---
   const showToast = (message, type = 'success') => {
     const id = Date.now();
@@ -175,16 +219,65 @@ export default function App() {
   };
 
   const handleLogin = (role, mobile, custId) => {
-    const matchedCustId = custId || 'SK-90821';
-    const user = {
-      role,
-      mobile,
-      customerId: matchedCustId,
-      name: role === 'admin' ? 'SolarKart Admin' : profile.customerName
-    };
-    setCurrentUser(user);
-    setActivePage(role === 'admin' ? 'admin_dashboard' : 'dashboard');
-    showToast(`Logged in successfully as ${role === 'admin' ? 'Admin' : 'Customer'}!`);
+    if (role === 'admin') {
+      const user = {
+        role: 'admin',
+        mobile: mobile || '9999999999',
+        customerId: 'ADMIN-SYS',
+        name: 'SolarKart Admin'
+      };
+      setCurrentUser(user);
+
+      // Aggregated admin view data:
+      const allActiveTickets = customers.flatMap(c => c.tickets || []);
+      const allHistoryTickets = customers.flatMap(c => c.historyTickets || []);
+      const allLeads = customers.flatMap(c => c.referrals?.leads || []);
+      const totalRef = customers.reduce((sum, c) => sum + (c.referrals?.totalReferrals || 0), 0);
+      const pendingRew = `₹${customers.reduce((sum, c) => sum + parseInt((c.referrals?.pendingRewards || '0').replace(/[^\d]/g, '') || 0), 0).toLocaleString('en-IN')}`;
+      const earnedRew = `₹${customers.reduce((sum, c) => sum + parseInt((c.referrals?.earnedRewards || '0').replace(/[^\d]/g, '') || 0), 0).toLocaleString('en-IN')}`;
+
+      setTickets(allActiveTickets);
+      setHistoryTickets(allHistoryTickets);
+      setReferrals({
+        referralCode: 'ADMIN-GLOBAL',
+        totalReferrals: totalRef,
+        pendingRewards: pendingRew,
+        earnedRewards: earnedRew,
+        leads: allLeads
+      });
+
+      setActivePage('admin_dashboard');
+      showToast('Logged in successfully as Admin!');
+    } else {
+      // Find matching customer by mobile or customerId
+      let matched = customers.find(c => c.customerId === custId || c.mobile === mobile);
+      if (!matched) {
+        // Fallback to Aarav Sharma if not found
+        matched = customers.find(c => c.customerId === 'SK-90821') || customers[0];
+      }
+
+      const user = {
+        role: 'customer',
+        mobile: matched.mobile,
+        customerId: matched.customerId,
+        name: matched.profile.customerName
+      };
+      setCurrentUser(user);
+
+      // Populate session states for this customer
+      setProfile(matched.profile);
+      setTickets(matched.tickets || []);
+      setHistoryTickets(matched.historyTickets || []);
+      setAmc(matched.amc);
+      setReferrals(matched.referrals);
+      setNotifications(matched.notifications || []);
+      setDocuments(matched.documents || []);
+      setPlantHealth(matched.plantHealth);
+      setWeather(matched.weather);
+
+      setActivePage('dashboard');
+      showToast(`Logged in successfully as ${matched.profile.customerName}!`);
+    }
   };
 
   const handleLogout = () => {
@@ -193,8 +286,12 @@ export default function App() {
   };
 
   const handleRaiseTicket = (newForm) => {
+    const customerId = currentUser?.customerId || 'SK-90821';
+    const customerName = currentUser?.name || profile.customerName;
     const newTicket = {
       ticketId: newForm.ticketId,
+      customerId,
+      customerName,
       title: newForm.title,
       description: newForm.description,
       category: newForm.category,
@@ -213,7 +310,7 @@ export default function App() {
         {
           status: 'Open',
           note: 'Ticket created: ' + newForm.description,
-          updatedBy: currentUser?.name || 'Customer',
+          updatedBy: customerName,
           dateTime: new Date().toLocaleString()
         }
       ]
@@ -231,11 +328,28 @@ export default function App() {
       status: 'Unread'
     };
     setNotifications((prev) => [newNotif, ...prev]);
+
+    // Sync to customers state
+    setCustomers((prevCustomers) =>
+      prevCustomers.map((c) => {
+        if (c.customerId === customerId) {
+          return {
+            ...c,
+            tickets: [newTicket, ...(c.tickets || [])],
+            notifications: [newNotif, ...(c.notifications || [])]
+          };
+        }
+        return c;
+      })
+    );
+
     showToast(`Ticket ${newForm.ticketId} registered!`);
   };
 
   const handleAssignEngineer = (ticketId, form) => {
     const engineer = initialEngineers.find((eng) => eng.name === form.engineerName);
+    
+    // Update active tickets state
     const updated = tickets.map((t) => {
       if (t.ticketId === ticketId) {
         return {
@@ -257,6 +371,43 @@ export default function App() {
       return t;
     });
     setTickets(updated);
+
+    // Sync to matching customer in database
+    const targetTicket = tickets.find((t) => t.ticketId === ticketId);
+    if (targetTicket) {
+      const targetCustId = targetTicket.customerId;
+      setCustomers((prevCustomers) =>
+        prevCustomers.map((c) => {
+          if (c.customerId === targetCustId) {
+            return {
+              ...c,
+              tickets: (c.tickets || []).map((t) => {
+                if (t.ticketId === ticketId) {
+                  return {
+                    ...t,
+                    status: 'Assigned',
+                    assignedEngineer: form.engineerName,
+                    engineerMobile: engineer ? engineer.mobile : '+91 9999999999',
+                    logs: [
+                      ...t.logs,
+                      {
+                        status: 'Assigned',
+                        note: `Engineer ${form.engineerName} assigned. Visit: ${form.visitDate || 'TBD'} (${form.visitTime}). Admin Note: ${form.adminNote}`,
+                        updatedBy: 'Admin',
+                        dateTime: new Date().toLocaleString()
+                      }
+                    ]
+                  };
+                }
+                return t;
+              })
+            };
+          }
+          return c;
+        })
+      );
+    }
+
     showToast(`Engineer assigned to ticket ${ticketId}`);
   };
 
@@ -280,6 +431,40 @@ export default function App() {
       return t;
     });
     setTickets(updated);
+
+    const targetTicket = tickets.find((t) => t.ticketId === ticketId);
+    if (targetTicket) {
+      const targetCustId = targetTicket.customerId;
+      setCustomers((prevCustomers) =>
+        prevCustomers.map((c) => {
+          if (c.customerId === targetCustId) {
+            return {
+              ...c,
+              tickets: (c.tickets || []).map((t) => {
+                if (t.ticketId === ticketId) {
+                  return {
+                    ...t,
+                    status: newStatus,
+                    logs: [
+                      ...t.logs,
+                      {
+                        status: newStatus,
+                        note: note || `Status updated to ${newStatus}.`,
+                        updatedBy: currentUser?.name || 'Staff',
+                        dateTime: new Date().toLocaleString()
+                      }
+                    ]
+                  };
+                }
+                return t;
+              })
+            };
+          }
+          return c;
+        })
+      );
+    }
+
     showToast(`Ticket ${ticketId} status updated to ${newStatus}`);
   };
 
@@ -327,13 +512,45 @@ export default function App() {
       }
       return t;
     });
-
     setTickets(updated);
+
+    const targetCustId = targetTicket.customerId;
+    setCustomers((prevCustomers) =>
+      prevCustomers.map((c) => {
+        if (c.customerId === targetCustId) {
+          return {
+            ...c,
+            documents: [newDoc, ...(c.documents || [])],
+            tickets: (c.tickets || []).map((t) => {
+              if (t.ticketId === ticketId) {
+                return {
+                  ...t,
+                  status: 'Resolved',
+                  visits: [...t.visits, newVisit],
+                  logs: [
+                    ...t.logs,
+                    {
+                      status: 'Resolved',
+                      note: `Engineer visit reported. Work Done: ${form.workDone}. Status set to Resolved.`,
+                      updatedBy: t.assignedEngineer || 'Engineer',
+                      dateTime: new Date().toLocaleString()
+                    }
+                  ]
+                };
+              }
+              return t;
+            })
+          };
+        }
+        return c;
+      })
+    );
+
     showToast(`Visit report logged. Status resolved.`);
   };
 
   const handleCloseTicket = (ticketId, rating, feedback, resolutionSummary) => {
-    const targetTicket = tickets.find((t) => t.ticketId === ticketId);
+    const targetTicket = tickets.find((t) => t.ticketId === ticketId) || historyTickets.find((t) => t.ticketId === ticketId);
     if (!targetTicket) return;
 
     const closedRecord = {
@@ -356,11 +573,34 @@ export default function App() {
 
     setHistoryTickets((prev) => [closedRecord, ...prev]);
     setTickets((prev) => prev.filter((t) => t.ticketId !== ticketId));
+
+    const targetCustId = targetTicket.customerId;
+    setCustomers((prevCustomers) =>
+      prevCustomers.map((c) => {
+        if (c.customerId === targetCustId) {
+          return {
+            ...c,
+            tickets: (c.tickets || []).filter((t) => t.ticketId !== ticketId),
+            historyTickets: [closedRecord, ...(c.historyTickets || [])]
+          };
+        }
+        return c;
+      })
+    );
+
     showToast(`Ticket ${ticketId} is Closed and archived.`);
   };
 
   const handleUpdateProfile = (updatedProfile) => {
     setProfile(updatedProfile);
+    setCustomers((prev) =>
+      prev.map((c) => {
+        if (c.customerId === currentUser?.customerId) {
+          return { ...c, profile: updatedProfile };
+        }
+        return c;
+      })
+    );
     showToast('Profile information updated successfully!');
   };
 
@@ -377,7 +617,7 @@ export default function App() {
       status: 'Active'
     };
 
-    setAmc({
+    const updatedAmc = {
       planName: amcForm.newPlan,
       status: 'Active',
       remainingDays: 365,
@@ -385,7 +625,8 @@ export default function App() {
       expiryDate: renewedPlan.endDate,
       renewalAmount: amcForm.amount,
       history: [renewedPlan, ...amc.history]
-    });
+    };
+    setAmc(updatedAmc);
 
     const docId = 'DOC-' + Math.floor(1000 + Math.random() * 9000);
     const newInvoice = {
@@ -397,6 +638,20 @@ export default function App() {
       status: 'Paid'
     };
     setDocuments((prev) => [newInvoice, ...prev]);
+
+    setCustomers((prev) =>
+      prev.map((c) => {
+        if (c.customerId === currentUser?.customerId) {
+          return {
+            ...c,
+            amc: updatedAmc,
+            documents: [newInvoice, ...(c.documents || [])]
+          };
+        }
+        return c;
+      })
+    );
+
     showToast('AMC Plan Renewed successfully!');
   };
 
@@ -414,11 +669,22 @@ export default function App() {
       date: new Date().toISOString().split('T')[0]
     };
 
-    setReferrals((prev) => ({
-      ...prev,
-      totalReferrals: prev.totalReferrals + 1,
-      leads: [newLead, ...prev.leads]
-    }));
+    const updatedReferrals = {
+      ...referrals,
+      totalReferrals: referrals.totalReferrals + 1,
+      leads: [newLead, ...referrals.leads]
+    };
+    setReferrals(updatedReferrals);
+
+    setCustomers((prev) =>
+      prev.map((c) => {
+        if (c.customerId === currentUser?.customerId) {
+          return { ...c, referrals: updatedReferrals };
+        }
+        return c;
+      })
+    );
+
     showToast(`Referral registered for ${newReferral.name}!`);
   };
 
@@ -547,59 +813,7 @@ export default function App() {
               onToggleSidebar={() => setIsSidebarOpen(true)}
             />
 
-            {/* PWA Install Notification Bar */}
-            {showInstallBanner && (
-              <div style={{
-                background: 'linear-gradient(135deg, var(--dark-blue), #1e293b)',
-                color: '#FFFFFF',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                margin: '16px 16px 0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                animation: 'fadeIn 0.3s ease-out',
-                flexWrap: 'wrap',
-                gap: '10px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    background: '#0F172A',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <img src="/icon-192.png" alt="SolarKart app icon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '13px', margin: '0', fontWeight: 'bold', letterSpacing: '0.2px' }}>Install SolarKart Web App</h4>
-                    <p style={{ fontSize: '11px', color: '#94a3b8', margin: '3px 0 0' }}>Add to your home screen for rapid access & offline status checks.</p>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button
-                    onClick={() => setShowInstallBanner(false)}
-                    className="btn btn-secondary btn-sm"
-                    style={{ fontSize: '11px', padding: '6px 12px', background: 'rgba(255,255,255,0.08)', color: '#FFFFFF', border: 'none' }}
-                  >
-                    Not Now
-                  </button>
-                  <button
-                    onClick={handleInstallApp}
-                    className="btn btn-primary btn-sm"
-                    style={{ fontSize: '11px', padding: '6px 14px' }}
-                  >
-                    Install App
-                  </button>
-                </div>
-              </div>
-            )}
+
 
             <main className="main-content">
               {/* RENDER CONDITIONAL PAGE VIEWS */}
@@ -610,6 +824,8 @@ export default function App() {
                   currentUser={currentUser}
                   onNavigateTab={setActivePage}
                   onNavigateMorePage={setActivePage}
+                  lastCleanedDate={lastCleanedDate}
+                  nextCleanedDate={nextCleanedDate}
                   onTriggerModal={(modalName) => {
                     if (modalName === 'raiseTicket') {
                       setActivePage('services');
@@ -619,6 +835,12 @@ export default function App() {
                       }, 100);
                     }
                   }}
+                />
+              )}
+              {activePage === 'usage' && (
+                <Usage
+                  usage={customers.find(c => c.customerId === currentUser?.customerId)?.usage}
+                  profile={profile}
                 />
               )}
               {activePage === 'analytics' && <Analytics />}
@@ -639,7 +861,17 @@ export default function App() {
               {activePage === 'documents' && (
                 <DocumentCenter documents={documents} showToast={showToast} />
               )}
-              {activePage === 'learning' && <LearningCenter />}
+              {activePage === 'care_panel' && (
+                <CarePanel
+                  profile={profile}
+                  amc={amc}
+                  onNavigateTab={setActivePage}
+                  showToast={showToast}
+                  lastCleanedDate={lastCleanedDate}
+                  nextCleanedDate={nextCleanedDate}
+                  onMarkCleaned={handleMarkCleaned}
+                />
+              )}
               {activePage === 'notifications' && (
                 <NotificationsPage
                   notifications={notifications}
@@ -703,6 +935,7 @@ export default function App() {
                   onAddVisit={handleAddVisit}
                   onCloseTicket={handleCloseTicket}
                   showToast={showToast}
+                  customers={customers}
                 />
               )}
             </main>
