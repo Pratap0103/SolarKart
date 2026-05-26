@@ -43,19 +43,12 @@ export default function AMCManagement({ amc, profile, onRenewAmc, showToast }) {
   return (
     <div>
       {/* AMC Status Cards */}
-      <div className="stats-grid">
+      <div className="stats-row">
         <StatCard label="AMC Status" value={amc.status} desc={`Expiry Date: ${amc.expiryDate}`} borderLeft="4px solid var(--primary-green)" />
         <StatCard label="Plan Name" value={amc.planName} desc="Standard plant coverage" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Remaining Days" value={`${amc.remainingDays} Days`} desc="Days until plan expires" />
         <StatCard label="Services Remaining" value={`${amc.servicesRemaining} left`} desc="Free cleaning & maintenance visits" borderLeft="4px solid var(--primary-green)" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Renewal Amount" value={amc.renewalAmount} desc="Special customer discount applied" />
-        <div style={{ flex: 1 }} />
       </div>
 
       {/* Primary Actions */}

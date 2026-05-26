@@ -109,22 +109,13 @@ export default function AdminDashboard({
   return (
     <div>
       {/* KPI Cards Grid */}
-      <div className="stats-grid">
+      <div className="stats-row">
         <StatCard label="Total Customers" value={`${customers?.length || 1} Users`} desc="Active solar plants registered" />
         <StatCard label="Total Active Plants" value={customers ? `${customers.reduce((acc, curr) => acc + parseFloat(curr.profile.plantCapacity), 0).toFixed(1)} kW` : "18.6 kW"} desc="Cumulative monitored capacity" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Today's Generation" value="28.4 MWh" desc="Total grid feed-in yield" borderLeft="4px solid var(--primary-green)" />
         <StatCard label="Open Complaints" value={`${tickets.length} Pending`} desc="Tickets awaiting closure" borderLeft={`4px solid ${tickets.length > 0 ? 'var(--danger)' : 'var(--primary-green)'}`} />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="AMC Due" value="1 Renewals" desc="Contracts expiring within 30 days" />
         <StatCard label="Low Performing Systems" value="2 Plants" desc="Generating under 60% capacity alert" borderLeft="4px solid var(--warning)" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Referral Performance" value="12 Converted" desc={`Leads converted: ${referrals.leads.filter(l => l.status === 'Converted').length}`} />
         <StatCard label="Revenue" value="₹4.82 Lakhs" desc="This month's AMC & service bills" borderLeft="4px solid var(--primary-green)" />
       </div>

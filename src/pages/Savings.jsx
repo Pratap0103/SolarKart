@@ -12,40 +12,22 @@ export default function Savings() {
   return (
     <div>
       {/* Overview Stat Widgets */}
-      <div className="stats-grid">
-        <StatCard label="System Cost" value={initialSavings.systemCost} desc="10 kW On-Grid installation" />
-        <StatCard label="Subsidy Received" value={initialSavings.subsidyReceived} desc="MNRE central subsidy" />
-      </div>
-
-      <div className="stats-grid">
-        <StatCard label="Net Investment" value={initialSavings.netInvestment} desc="System cost less subsidy" />
-        <StatCard label="Total Saved" value={initialSavings.totalMoneySaved} desc="Lifetime power savings" borderLeft="4px solid var(--primary-green)" />
-      </div>
-
-      <div className="stats-grid">
-        <StatCard label="ROI %" value="48.5%" desc="Net returns ratio" />
-        <StatCard label="Payback Period" value={initialSavings.paybackPeriod} desc="Total recovery timeline" />
-      </div>
-
-      {/* Payback Progress Bar */}
-      <div className="card" style={{ padding: '20px' }}>
-        <h3 style={{ fontSize: '15px', marginBottom: '12px' }}>Payback Milestone Progress</h3>
-        <ProgressBar
-          value={92160}
-          max={190000}
-          label="Capital Recovery Progress"
-          desc="₹92,160 / ₹1,90,000 (48.5%)"
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--gray-text)', marginTop: '8px' }}>
-          <span>Commissioned: Mar 2024</span>
-          <span>Est. Complete: Oct 2028</span>
+      <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '4px', marginBottom: '16px', overflow: 'hidden' }}>
+        <div style={{ flex: 1 }}>
+          <StatCard label="Net Inv." value={initialSavings.netInvestment} style={{ padding: '6px 4px' }} className="micro-stat" />
         </div>
-        <div style={{ marginTop: '16px' }}>
-          <Button variant="secondary" onClick={() => setShowRoiDetail(true)}>
-            View Deep ROI Details
-          </Button>
+        <div style={{ flex: 1 }}>
+          <StatCard label="Total Saved" value={initialSavings.totalMoneySaved} borderLeft="2px solid var(--primary-green)" style={{ padding: '6px 4px' }} className="micro-stat" />
+        </div>
+        <div style={{ flex: 1 }}>
+          <StatCard label="ROI" value="48.5%" style={{ padding: '6px 4px' }} className="micro-stat" />
+        </div>
+        <div style={{ flex: 1 }}>
+          <StatCard label="Payback" value="4.5 Yrs" style={{ padding: '6px 4px' }} className="micro-stat" />
         </div>
       </div>
+
+
 
       {/* Monthly Financial Log */}
       <div className="card" style={{ marginTop: '20px', padding: '10px 0' }}>

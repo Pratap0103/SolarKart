@@ -5,6 +5,7 @@ import { Bell, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 
+
 // Page-wise components
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -38,6 +39,27 @@ import {
   initialCustomers
 } from './dummyData';
 
+const safeStorageSet = (key, data) => {
+  try {
+    localStorage.setItem(key, data);
+  } catch (e) {
+    console.warn(`LocalStorage quota exceeded when setting ${key}.`);
+    if (e.name === 'QuotaExceededError' || (e.message && e.message.toLowerCase().includes('quota'))) {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('sk_')) {
+          localStorage.removeItem(k);
+        }
+      }
+      try {
+        localStorage.setItem(key, data);
+      } catch (innerE) {
+        console.error("Still exceeding quota after clearing sk_ keys.");
+      }
+    }
+  }
+};
+
 export default function App() {
   // --- CORE APP STATE ---
   const [customers, setCustomers] = useState(() => {
@@ -46,7 +68,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem('sk_customers', JSON.stringify(customers));
+    safeStorageSet('sk_customers', JSON.stringify(customers));
   }, [customers]);
 
   const [currentUser, setCurrentUser] = useState(() => {
@@ -147,51 +169,51 @@ export default function App() {
 
   // --- LOCAL PERSISTENCE TRIGGERS ---
   useEffect(() => {
-    localStorage.setItem('sk_user', JSON.stringify(currentUser));
+    safeStorageSet('sk_user', JSON.stringify(currentUser));
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('sk_profile', JSON.stringify(profile));
+    safeStorageSet('sk_profile', JSON.stringify(profile));
   }, [profile]);
 
   useEffect(() => {
-    localStorage.setItem('sk_tickets', JSON.stringify(tickets));
+    safeStorageSet('sk_tickets', JSON.stringify(tickets));
   }, [tickets]);
 
   useEffect(() => {
-    localStorage.setItem('sk_history_tickets', JSON.stringify(historyTickets));
+    safeStorageSet('sk_history_tickets', JSON.stringify(historyTickets));
   }, [historyTickets]);
 
   useEffect(() => {
-    localStorage.setItem('sk_amc', JSON.stringify(amc));
+    safeStorageSet('sk_amc', JSON.stringify(amc));
   }, [amc]);
 
   useEffect(() => {
-    localStorage.setItem('sk_referrals', JSON.stringify(referrals));
+    safeStorageSet('sk_referrals', JSON.stringify(referrals));
   }, [referrals]);
 
   useEffect(() => {
-    localStorage.setItem('sk_notifications', JSON.stringify(notifications));
+    safeStorageSet('sk_notifications', JSON.stringify(notifications));
   }, [notifications]);
 
   useEffect(() => {
-    localStorage.setItem('sk_documents', JSON.stringify(documents));
+    safeStorageSet('sk_documents', JSON.stringify(documents));
   }, [documents]);
 
   useEffect(() => {
-    localStorage.setItem('sk_plant_health', JSON.stringify(plantHealth));
+    safeStorageSet('sk_plant_health', JSON.stringify(plantHealth));
   }, [plantHealth]);
 
   useEffect(() => {
-    localStorage.setItem('sk_weather', JSON.stringify(weather));
+    safeStorageSet('sk_weather', JSON.stringify(weather));
   }, [weather]);
 
   useEffect(() => {
-    localStorage.setItem('sk_last_cleaned_date', lastCleanedDate);
+    safeStorageSet('sk_last_cleaned_date', lastCleanedDate);
   }, [lastCleanedDate]);
 
   useEffect(() => {
-    localStorage.setItem('sk_next_cleaned_date', nextCleanedDate);
+    safeStorageSet('sk_next_cleaned_date', nextCleanedDate);
   }, [nextCleanedDate]);
 
   const handleMarkCleaned = () => {
@@ -822,6 +844,7 @@ export default function App() {
                   profile={profile}
                   amc={amc}
                   currentUser={currentUser}
+                  usage={customers.find(c => c.customerId === currentUser?.customerId)?.usage}
                   onNavigateTab={setActivePage}
                   onNavigateMorePage={setActivePage}
                   lastCleanedDate={lastCleanedDate}
@@ -939,6 +962,13 @@ export default function App() {
                 />
               )}
             </main>
+            
+
+
+            {/* Global Fixed Footer */}
+            <footer className="app-footer">
+              Powered by <a href="https://www.botivate.in" target="_blank" rel="noreferrer">Botivate</a>
+            </footer>
           </div>
         </div>
       )}

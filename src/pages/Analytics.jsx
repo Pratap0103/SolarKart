@@ -40,7 +40,7 @@ export default function Analytics() {
         ))}
       </div>
 
-      {/* SVG Chart Card */}
+      {/* Main Chart Section */}
       <ChartCard
         title={`${activeTab}ly Generation Analytics`}
         badgeText={peakTextMap[activeTab]}
@@ -81,13 +81,13 @@ export default function Analytics() {
         )}
 
         {activeTab === 'Month' && (
-          <Table headers={['Date', 'Generation kWh', 'Average kWh', 'Weather', 'Status']}>
+          <Table headers={['Date', 'Generation kWh', 'Average kWh', 'Highest Day', 'Status']}>
             {initialEnergyData.monthView.map((m, i) => (
               <tr key={i}>
                 <td>{m.date}</td>
-                <td>{(m.avgGeneration * 1.1).toFixed(1)} kWh</td>
+                <td>{m.generation} kWh</td>
                 <td>{m.avgGeneration} kWh</td>
-                <td>{m.weather}</td>
+                <td>{m.highestDay} kWh</td>
                 <td><Badge type="Active">Active</Badge></td>
               </tr>
             ))}
@@ -101,8 +101,8 @@ export default function Analytics() {
                 <td>{y.month}</td>
                 <td>{y.generation} kWh</td>
                 <td>{y.savings}</td>
-                <td>{y.efficiency}%</td>
-                <td><Badge type={y.status}>{y.status}</Badge></td>
+                <td>{y.efficiency}</td>
+                <td><Badge type="Active">Active</Badge></td>
               </tr>
             ))}
           </Table>
@@ -114,9 +114,9 @@ export default function Analytics() {
               <tr key={i}>
                 <td style={{ fontWeight: 'bold' }}>{l.year}</td>
                 <td>{l.totalGeneration} kWh</td>
-                <td>{l.savings}</td>
-                <td>{l.co2Saved} Tons</td>
-                <td><Badge type={l.status}>{l.status}</Badge></td>
+                <td>{l.totalSavings}</td>
+                <td>{l.co2Saved}</td>
+                <td><Badge type="Active">Active</Badge></td>
               </tr>
             ))}
           </Table>
@@ -125,15 +125,11 @@ export default function Analytics() {
 
       {/* Summary KPI Cards */}
       <h3 style={{ fontSize: '16px', margin: '24px 0 12px', textAlign: 'left' }}>System Performance Indicators</h3>
-      <div className="stats-grid">
+      <div className="stats-row" style={{ marginBottom: '24px' }}>
         <StatCard label="Total Units" value="13,232 kWh" desc="Lifetime aggregate yield" />
         <StatCard label="Peak Time" value="12:45 PM" desc="Best sunlight conversion hours" />
-      </div>
-      <div className="stats-grid">
         <StatCard label="Average Generation" value="22.8 kWh/day" desc="Expected base rating" />
         <StatCard label="Maximum Generation" value="31.2 kWh" desc="Record single day yield" />
-      </div>
-      <div className="stats-grid" style={{ marginBottom: '24px' }}>
         <StatCard label="Minimum Generation" value="8.4 kWh" desc="Overcast rain performance" />
         <StatCard label="Efficiency %" value="94.2%" desc="Inverter conversion health" />
       </div>

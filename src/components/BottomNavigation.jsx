@@ -18,7 +18,7 @@ export default function BottomNavigation({ activeTab, onTabChange }) {
         return (
           <button
             key={tab.id}
-            className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+            className={`nav-item ${isActive ? 'active' : ''}`}
             onClick={() => onTabChange(tab.id)}
           >
             <IconComponent size={20} />

@@ -1,17 +1,17 @@
 import React from 'react';
 import {
   Sun,
-  Activity,
-  TrendingUp,
-  Wrench,
+  Zap,
+  Leaf,
+  PlugZap,
   FileText,
-  Play,
+  Droplets,
   Bell,
-  Award,
-  MessageSquare,
-  CloudRain,
-  Cpu,
-  Shield,
+  SunMedium,
+  Sparkles,
+  CloudSun,
+  Activity,
+  ShieldCheck,
   User,
   Lock,
   X,
@@ -21,19 +21,18 @@ import {
 export default function Sidebar({ activePage, onPageChange, role, unreadNotifCount, isOpen, onClose }) {
   const pages = [
     { id: 'dashboard', label: 'Dashboard', icon: Sun },
-    { id: 'usage', label: 'Power Usage', icon: BatteryCharging },
-    { id: 'analytics', label: 'Energy Analytics', icon: Activity },
-    { id: 'savings', label: 'Savings & ROI', icon: TrendingUp },
-    { id: 'services', label: 'Service & Complaint', icon: Wrench },
+    { id: 'analytics', label: 'My Solar History', icon: Zap },
+    { id: 'savings', label: 'My Money Saved', icon: Leaf },
+    { id: 'services', label: 'Get Help / Repair', icon: PlugZap },
     { id: 'documents', label: 'Document Center', icon: FileText },
-    { id: 'care_panel', label: 'Solar Care Panel', icon: Play },
+    { id: 'care_panel', label: 'Maintenance Tips', icon: Droplets },
     { id: 'notifications', label: 'Notifications', icon: Bell, badgeCount: unreadNotifCount },
-    { id: 'referrals', label: 'Referral System', icon: Award },
-    { id: 'ai_assistant', label: 'AI Solar Assistant', icon: MessageSquare },
-    { id: 'weather', label: 'Weather Info', icon: CloudRain },
-    { id: 'plant_health', label: 'Plant Health', icon: Cpu },
-    { id: 'amc', label: 'AMC Management', icon: Shield },
-    { id: 'profile', label: 'Profile Spec', icon: User }
+    { id: 'referrals', label: 'Invite Friends & Earn', icon: SunMedium },
+    { id: 'ai_assistant', label: 'AI Solar Assistant', icon: Sparkles },
+    { id: 'weather', label: 'Weather Info', icon: CloudSun },
+    { id: 'plant_health', label: 'System Health Check', icon: Activity },
+    { id: 'amc', label: 'Service Plan (AMC)', icon: ShieldCheck },
+    { id: 'profile', label: 'My Profile', icon: User }
   ];
 
 

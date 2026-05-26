@@ -39,19 +39,12 @@ export default function PlantHealth({ plantHealth, onCreateTicketFromAlert, show
       )}
 
       {/* KPI Cards */}
-      <div className="stats-grid">
+      <div className="stats-row">
         <StatCard label="Inverter Status" value={plantHealth.inverterStatus} desc="Solax Smart Inverter 10 kW" borderLeft="4px solid var(--danger)" />
         <StatCard label="Battery Status" value={plantHealth.batteryStatus} desc="Lithium Ion storage: 15 kWh" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Panel Status" value={plantHealth.panelStatus} desc="Monocrystalline Perc cell arrays" borderLeft="4px solid var(--primary-green)" />
         <StatCard label="Fault Detection" value={`${plantHealth.alerts} Flagged`} desc="Fault logs status" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Efficiency Score" value={plantHealth.overallEfficiency} desc="Net power conversion yield ratio" borderLeft="4px solid var(--primary-green)" />
-        <div style={{ flex: 1 }} />
       </div>
 
       {/* Components Status Table */}

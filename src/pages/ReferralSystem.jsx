@@ -57,7 +57,7 @@ export default function ReferralSystem({ referrals, onRegisterReferral, showToas
   return (
     <div>
       {/* Referral KPI metrics */}
-      <div className="stats-grid">
+      <div className="stats-row">
         <div className="stat-item" style={{ borderLeft: '4px solid var(--primary-green)' }}>
           <div className="stat-label">Referral Code</div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
@@ -71,9 +71,6 @@ export default function ReferralSystem({ referrals, onRegisterReferral, showToas
           <div className="stat-desc">Share with neighbors & friends</div>
         </div>
         <StatCard label="Total Referrals" value={referrals.totalReferrals} desc="All submitted leads" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Pending Rewards" value={referrals.pendingRewards} desc="Awaiting plant conversions" />
         <StatCard label="Earned Rewards" value={referrals.earnedRewards} desc="Direct bank cashback paid out" borderLeft="4px solid var(--primary-green)" />
       </div>

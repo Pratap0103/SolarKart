@@ -68,7 +68,7 @@ export default function Usage({ usage, profile }) {
       </div>
 
       {/* Grid: 1. Distribution Flow map & 2. Battery storage */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '20px' }}>
         
         {/* Card 1: Interactive Flow Map */}
         <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '340px' }}>
@@ -212,7 +212,7 @@ export default function Usage({ usage, profile }) {
 
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', fontSize: '10px', color: 'var(--gray-text)', borderTop: '1px solid #F1F5F9', paddingTop: '12px', marginTop: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '16px', fontSize: '10px', color: 'var(--gray-text)', borderTop: '1px solid #F1F5F9', paddingTop: '12px', marginTop: '12px' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FBBF24', display: 'inline-block' }}></span>
               Solar Input
@@ -242,7 +242,7 @@ export default function Usage({ usage, profile }) {
           </div>
 
           {/* Battery Circle Ring */}
-          <div className="gauge-wrapper" style={{ margin: '14px 0' }}>
+          <div className="gauge-wrapper" style={{ margin: '14px auto' }}>
             <svg className="gauge-svg" viewBox="0 0 100 100" style={{ width: '130px', height: '130px' }}>
               <circle cx="50" cy="50" r="40" fill="none" stroke="#E2E8F0" strokeWidth="8" />
               <circle
@@ -304,7 +304,7 @@ export default function Usage({ usage, profile }) {
             // Calculate a color scale
             const percent = Math.min(100, Math.round((app.consumption / 3000) * 100));
             return (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyStyle: 'stretch', gap: '14px', borderBottom: idx < data.appliances.length - 1 ? '1px solid #F1F5F9' : 'none', paddingBottom: idx < data.appliances.length - 1 ? '12px' : '0' }}>
+              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '14px', borderBottom: idx < data.appliances.length - 1 ? '1px solid #F1F5F9' : 'none', paddingBottom: idx < data.appliances.length - 1 ? '12px' : '0' }}>
                 <div style={{
                   width: '36px',
                   height: '36px',

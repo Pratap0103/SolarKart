@@ -37,17 +37,11 @@ export default function WeatherPage({ weather, onUpdateCity, showToast }) {
       </div>
 
       {/* KPI Cards */}
-      <div className="stats-grid" style={{ marginTop: '20px' }}>
+      <div className="stats-row" style={{ marginTop: '20px' }}>
         <StatCard label="Current Weather" value={weather.condition} desc={`Humidity: ${weather.humidity}`} borderLeft="4px solid var(--sky-blue)" />
         <StatCard label="Temperature" value={weather.temp} desc="Peak ambient cell temp" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Rain Probability" value={weather.rainChance} desc="Precipitation risk" />
         <StatCard label="Sunlight Hours" value={`${weather.sunlightHours} Hrs`} desc="Effective peak sunlight today" borderLeft="4px solid var(--primary-green)" />
-      </div>
-
-      <div className="stats-grid">
         <StatCard label="Expected Gen Today" value={weather.expectedKWh} desc="Simulated system output" borderLeft="4px solid var(--primary-green)" />
         <StatCard label="Tomorrow Prediction" value="23.8 kWh" desc="Partly Cloudy forecast" />
       </div>

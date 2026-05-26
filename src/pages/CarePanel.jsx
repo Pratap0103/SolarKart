@@ -121,20 +121,6 @@ export default function CarePanel({
   return (
     <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
       
-      {/* Title Header */}
-      <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-        <div>
-          <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--dark-blue)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={22} style={{ color: 'var(--primary-green)' }} /> Solar Care & Maintenance Hub
-          </h2>
-          <p style={{ fontSize: '13px', color: 'var(--gray-text)', marginTop: '2px' }}>
-            Keep your solar panels clean & diagnostic components optimized like an EV dashboard.
-          </p>
-        </div>
-        <span className="badge badge-info" style={{ padding: '6px 12px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Wrench size={12} /> Active Support Covered
-        </span>
-      </div>
 
       {/* Grid: Dust Calculator + Schedule Tracker */}
       <div className="care-tracker-grid">
