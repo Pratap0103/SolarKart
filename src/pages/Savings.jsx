@@ -11,39 +11,47 @@ export default function Savings() {
 
   return (
     <div>
-      {/* Overview Stat Widgets */}
-      <div style={{ display: 'flex', flexWrap: 'nowrap', gap: '4px', marginBottom: '16px', overflow: 'hidden' }}>
-        <div style={{ flex: 1 }}>
-          <StatCard label="Net Inv." value={initialSavings.netInvestment} style={{ padding: '6px 4px' }} className="micro-stat" />
+      {/* Overview Stat Widgets - 4 items in one row guaranteed for mobile */}
+      <div className="grid grid-cols-4 gap-2 mb-6">
+        <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-500 transition-colors">
+          <span className="text-[9px] sm:text-xs font-semibold text-slate-500 uppercase tracking-tight mb-1">Net Inv.</span>
+          <span className="text-[11px] sm:text-sm font-bold text-slate-900 leading-tight">{initialSavings.netInvestment}</span>
         </div>
-        <div style={{ flex: 1 }}>
-          <StatCard label="Total Saved" value={initialSavings.totalMoneySaved} borderLeft="2px solid var(--primary-green)" style={{ padding: '6px 4px' }} className="micro-stat" />
+        <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-500 transition-colors">
+          <span className="text-[9px] sm:text-xs font-semibold text-slate-500 uppercase tracking-tight mb-1">Total Saved</span>
+          <span className="text-[11px] sm:text-sm font-bold text-blue-600 leading-tight">{initialSavings.totalMoneySaved}</span>
         </div>
-        <div style={{ flex: 1 }}>
-          <StatCard label="ROI" value="48.5%" style={{ padding: '6px 4px' }} className="micro-stat" />
+        <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-500 transition-colors">
+          <span className="text-[9px] sm:text-xs font-semibold text-slate-500 uppercase tracking-tight mb-1">ROI</span>
+          <span className="text-[11px] sm:text-sm font-bold text-emerald-600 leading-tight">48.5%</span>
         </div>
-        <div style={{ flex: 1 }}>
-          <StatCard label="Payback" value="4.5 Yrs" style={{ padding: '6px 4px' }} className="micro-stat" />
+        <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-2 flex flex-col justify-center items-center text-center hover:border-blue-500 transition-colors">
+          <span className="text-[9px] sm:text-xs font-semibold text-slate-500 uppercase tracking-tight mb-1">Payback</span>
+          <span className="text-[11px] sm:text-sm font-bold text-slate-900 leading-tight">4.5 Yrs</span>
         </div>
       </div>
 
 
 
       {/* Monthly Financial Log */}
-      <div className="card" style={{ marginTop: '20px', padding: '10px 0' }}>
-        <h3 style={{ fontSize: '15px', padding: '10px 20px 8px' }}>Monthly Bill Reduction Records</h3>
-        <Table headers={['Month', 'Bill Before Solar', 'Bill After Solar', 'Monthly Savings', 'Cumulative Savings', 'ROI %']}>
-          {initialSavings.savingsLog.map((log, index) => (
-            <tr key={index}>
-              <td style={{ fontWeight: 'bold' }}>{log.month}</td>
-              <td style={{ color: 'var(--danger)' }}>{log.billBefore}</td>
-              <td style={{ color: 'var(--primary-green)', fontWeight: 'bold' }}>{log.billAfter}</td>
-              <td style={{ color: 'var(--primary-green)', fontWeight: 'bold' }}>{log.savings}</td>
-              <td style={{ fontWeight: 'bold' }}>{log.cumulativeSavings}</td>
-              <td>{log.roiPercent}</td>
-            </tr>
-          ))}
-        </Table>
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <h3 className="font-semibold text-slate-900">Monthly Bill Reduction Records</h3>
+        </div>
+        <div className="p-0">
+          <Table headers={['Month', 'Bill Before Solar', 'Bill After Solar', 'Monthly Savings', 'Cumulative Savings', 'ROI %']}>
+            {initialSavings.savingsLog.map((log, index) => (
+              <tr key={index} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                <td className="py-3 px-4 text-sm font-medium text-slate-900">{log.month}</td>
+                <td className="py-3 px-4 text-sm text-red-600 font-medium">{log.billBefore}</td>
+                <td className="py-3 px-4 text-sm text-emerald-600 font-medium">{log.billAfter}</td>
+                <td className="py-3 px-4 text-sm text-blue-600 font-semibold">{log.savings}</td>
+                <td className="py-3 px-4 text-sm font-medium text-slate-700">{log.cumulativeSavings}</td>
+                <td className="py-3 px-4 text-sm text-slate-600">{log.roiPercent}</td>
+              </tr>
+            ))}
+          </Table>
+        </div>
       </div>
 
       {/* ROI Detailed Popup Modal */}

@@ -159,37 +159,43 @@ export default function ServiceComplaint({
   return (
     <div>
       {/* Upper Navigation Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <div className="bg-slate-100/80 p-1 rounded-lg flex gap-1 overflow-x-auto w-full hide-scrollbar">
           <button
-            className={`btn btn-sm ${activeSubTab === 'pending' ? 'btn-primary' : 'btn-secondary'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${activeSubTab === 'pending' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'}`}
             onClick={() => setActiveSubTab('pending')}
           >
-            Pending Tickets ({tickets.length})
+            Pending Tickets <span className="ml-1.5 bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-xs">{tickets.length}</span>
           </button>
           <button
-            className={`btn btn-sm ${activeSubTab === 'history' ? 'btn-primary' : 'btn-secondary'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${activeSubTab === 'history' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'}`}
             onClick={() => setActiveSubTab('history')}
           >
-            Service History ({historyTickets.length})
+            Service History <span className="ml-1.5 bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-xs">{historyTickets.length}</span>
           </button>
           <button
-            className={`btn btn-sm ${activeSubTab === 'support' ? 'btn-primary' : 'btn-secondary'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all whitespace-nowrap ${activeSubTab === 'support' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'}`}
             onClick={() => setActiveSubTab('support')}
           >
             Contact Support
           </button>
         </div>
-        <Button variant="primary" onClick={() => toggleModal('raiseTicket', true)}>
-          <Plus size={16} style={{ marginRight: '4px' }} /> Raise Ticket
-        </Button>
+        <button 
+          onClick={() => toggleModal('raiseTicket', true)}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm whitespace-nowrap"
+        >
+          <Plus size={16} /> Raise Ticket
+        </button>
       </div>
 
       {/* TABS VIEW SWITCHER */}
       {activeSubTab === 'pending' && (
-        <div className="card" style={{ padding: '10px 0' }}>
-          <h3 style={{ fontSize: '15px', padding: '10px 20px 4px' }}>Active Pending Tickets</h3>
-          <Table headers={['Ticket ID', 'Complaint Title', 'Category', 'Priority', 'Created Date', 'Pref. Visit Date', 'Pref. Time', 'Status', 'Engineer', 'Action']}>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <h3 className="font-semibold text-slate-900">Active Pending Tickets</h3>
+          </div>
+          <div className="p-0">
+            <Table headers={['Ticket ID', 'Complaint Title', 'Category', 'Priority', 'Created Date', 'Pref. Visit Date', 'Pref. Time', 'Status', 'Engineer', 'Action']}>
             {tickets.length === 0 ? (
               <tr>
                 <td colSpan={10} style={{ textAlign: 'center', padding: '20px', color: 'var(--gray-text)' }}>
@@ -201,8 +207,10 @@ export default function ServiceComplaint({
                 <tr key={t.ticketId}>
                   <td style={{ fontWeight: 'bold' }}>{t.ticketId}</td>
                   <td>
-                    <div style={{ fontWeight: 'bold', color: 'var(--dark-blue)' }}>{t.title}</div>
-                    <div style={{ fontSize: '9px', color: 'var(--gray-text)' }}>{t.description.substring(0, 40)}...</div>
+                    <div className="flex flex-col text-right sm:text-left">
+                      <div style={{ fontWeight: 'bold', color: 'var(--dark-blue)' }}>{t.title}</div>
+                      <div style={{ fontSize: '9px', color: 'var(--gray-text)' }}>{t.description.substring(0, 40)}...</div>
+                    </div>
                   </td>
                   <td>{t.category}</td>
                   <td><Badge type={t.priority}>{t.priority}</Badge></td>
@@ -265,13 +273,17 @@ export default function ServiceComplaint({
               ))
             )}
           </Table>
+          </div>
         </div>
       )}
 
       {activeSubTab === 'history' && (
-        <div className="card" style={{ padding: '10px 0' }}>
-          <h3 style={{ fontSize: '15px', padding: '10px 20px 4px' }}>Service complaint History</h3>
-          <Table headers={['Ticket ID', 'Complaint Title', 'Category', 'Priority', 'Engineer', 'Created Date', 'Resolved Date', 'Closed Date', 'Final Status', 'Rating', 'Action']}>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <h3 className="font-semibold text-slate-900">Service complaint History</h3>
+          </div>
+          <div className="p-0">
+            <Table headers={['Ticket ID', 'Complaint Title', 'Category', 'Priority', 'Engineer', 'Created Date', 'Resolved Date', 'Closed Date', 'Final Status', 'Rating', 'Action']}>
             {historyTickets.length === 0 ? (
               <tr>
                 <td colSpan={11} style={{ textAlign: 'center', padding: '20px', color: 'var(--gray-text)' }}>
@@ -310,20 +322,32 @@ export default function ServiceComplaint({
               ))
             )}
           </Table>
+          </div>
         </div>
       )}
 
       {activeSubTab === 'support' && (
-        <div className="card" style={{ padding: '20px' }}>
-          <h3 style={{ fontSize: '16px', marginBottom: '14px' }}>Contact SolarKart Support Helpdesk</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Phone size={18} style={{ color: 'var(--primary-green)' }} />
-              <span>Toll Free helpline: <strong>1800-200-9988</strong> (Working Hours: 9 AM to 6 PM)</span>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6 p-6 md:p-8">
+          <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <MessageCircle className="text-blue-600" /> Contact SolarKart Support
+          </h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col gap-3 hover:border-blue-300 transition-colors cursor-pointer group">
+              <div className="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center mb-1 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <Phone size={20} />
+              </div>
+              <h4 className="font-semibold text-slate-900">Toll Free Helpline</h4>
+              <p className="text-2xl font-black text-blue-600 tracking-tight">1800-200-9988</p>
+              <p className="text-xs text-slate-500 font-medium mt-1">Working Hours: 9 AM to 6 PM (Mon-Sat)</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <MessageCircle size={18} style={{ color: '#25D366' }} />
-              <span>WhatsApp Chat Support: <strong>+91 99887 76655</strong></span>
+            
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col gap-3 hover:border-emerald-300 transition-colors cursor-pointer group">
+              <div className="bg-emerald-100 text-emerald-600 w-10 h-10 rounded-full flex items-center justify-center mb-1 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <MessageCircle size={20} />
+              </div>
+              <h4 className="font-semibold text-slate-900">WhatsApp Support</h4>
+              <p className="text-2xl font-black text-emerald-600 tracking-tight">+91 99887 76655</p>
+              <p className="text-xs text-slate-500 font-medium mt-1">Instant chat bot & live agent routing</p>
             </div>
           </div>
         </div>

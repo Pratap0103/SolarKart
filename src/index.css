@@ -1,28 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  /* Color Palette - Premium Electric Blue & Pristine White (Ola Style) */
-  --primary-green: #0052FF; /* Main Electric Brand Blue */
-  --primary-blue: #0052FF;
-  --dark-blue: #0B132B; /* Premium Midnight Navy */
-  --sky-blue: #0EA5E9; /* Digital Accent Cyan */
-  --light-green: #F0F6FF; /* Ice Blue instead of Light Green */
+  /* Color Palette — Premium Refined Blue & White */
+  --primary-green: #2563EB; /* Refined Royal Blue */
+  --primary-blue: #2563EB;
+  --dark-blue: #0F172A; /* Rich Slate 900 */
+  --sky-blue: #38BDF8; /* Vibrant Sky Accent */
+  --light-green: #EFF6FF; /* Blue-tinted Ice White */
   --white: #FFFFFF;
-  --bg: #FAFCFF; /* Purer whiter crisp backdrop */
+  --bg: #F8FAFC; /* Premium Warm-Gray Backdrop */
   --text-dark: #1E293B; /* Slate 800 */
   --gray-text: #64748B; /* Slate 500 */
   --warning: #F59E0B;
   --danger: #EF4444;
-  --success: #10B981; /* Emerald Green for Healthy states */
+  --success: #10B981;
   
-  /* UI variables */
-  --shadow-sm: 0 2px 4px rgba(0, 82, 255, 0.02);
-  --shadow-md: 0 10px 20px rgba(0, 82, 255, 0.04), 0 2px 6px rgba(0, 82, 255, 0.02);
-  --shadow-lg: 0 20px 40px rgba(0, 82, 255, 0.06), 0 4px 12px rgba(0, 82, 255, 0.03);
-  --shadow-premium: 0 30px 60px rgba(11, 19, 43, 0.05), 0 5px 15px rgba(11, 19, 43, 0.02);
-  --radius-sm: 10px;
-  --radius-md: 18px;
-  --radius-lg: 28px;
+  /* UI — Soft Shadows (UI/UX Pro Max: depth without harshness) */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.03);
+  --shadow-premium: 0 20px 48px rgba(15, 23, 42, 0.06);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
   --radius-full: 9999px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -41,6 +45,11 @@ body {
   min-height: 100dvh;
   margin: 0;
   overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
 #root {
@@ -71,7 +80,7 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #E2E8F0;
+  border-right: 1px solid #F1F5F9;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -80,8 +89,8 @@ body {
   z-index: 100;
   padding: 0;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .sidebar-container::-webkit-scrollbar {
@@ -193,29 +202,29 @@ body {
   background: none;
   border: none;
   color: #64748B;
-  padding: 12px 16px;
+  padding: 10px 14px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   width: 100%;
   text-align: left;
-  transition: var(--transition);
+  transition: all 0.15s ease;
   outline: none;
 }
 
 .sidebar-nav-item:hover {
-  background-color: #F1F5F9;
-  color: var(--primary-green);
+  background: #F8FAFC;
+  color: var(--dark-blue);
 }
 
 .sidebar-nav-item.active {
-  background-color: rgba(0, 82, 255, 0.08);
+  background: var(--light-green);
   color: var(--primary-green);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .app-body {
@@ -260,25 +269,25 @@ body {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-text);
-  border-radius: 4px;
+  background: #CBD5E1;
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-blue);
+  background: #94A3B8;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--dark-blue);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 p {
@@ -289,11 +298,13 @@ p {
 
 /* Header UI */
 .app-header {
-  background-color: var(--white);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text-dark);
   padding: 0 24px;
-  border-bottom: 1px solid #E2E8F0;
-  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid #F1F5F9;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -353,9 +364,9 @@ p {
 }
 
 .icon-btn {
-  background: #F1F5F9;
+  background: transparent;
   border: 1px solid #E2E8F0;
-  color: var(--text-dark);
+  color: var(--gray-text);
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -364,13 +375,13 @@ p {
   align-items: center;
   cursor: pointer;
   position: relative;
-  transition: var(--transition);
+  transition: all 0.15s ease;
 }
 
 .icon-btn:hover {
-  background: var(--primary-green);
-  color: var(--white);
-  transform: translateY(-2px);
+  background: #F1F5F9;
+  color: var(--dark-blue);
+  border-color: #CBD5E1;
 }
 
 .badge-dot {
@@ -513,16 +524,16 @@ p {
 .card {
   background-color: var(--white);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-premium);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #F1F5F9;
   padding: 20px;
-  margin-bottom: 20px;
-  transition: var(--transition);
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(22, 163, 74, 0.04), 0 8px 10px -6px rgba(22, 163, 74, 0.04);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .card-header {
@@ -640,12 +651,11 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: var(--radius-full);
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .badge-success {
@@ -673,33 +683,37 @@ p {
   color: var(--gray-text);
 }
 
-/* Tabs UI */
 .tabs-header {
   display: flex;
   background-color: #F1F5F9;
-  padding: 4px;
-  border-radius: var(--radius-md);
+  padding: 3px;
+  border-radius: var(--radius-sm);
   margin-bottom: 20px;
-  gap: 4px;
+  gap: 2px;
 }
 
 .tab-btn {
   flex: 1;
   border: none;
   background: transparent;
-  padding: 10px;
-  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--gray-text);
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.15s ease;
+}
+
+.tab-btn:hover {
+  color: var(--dark-blue);
 }
 
 .tab-btn.active {
   background-color: var(--white);
   color: var(--dark-blue);
-  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
 /* Modals / Popups */
@@ -927,31 +941,39 @@ p {
   .custom-table tr {
     background-color: var(--white);
     border: 1px solid rgba(226, 232, 240, 0.8);
+    border-left: 4px solid var(--primary-green);
     border-radius: var(--radius-md);
     margin-bottom: 16px;
     box-shadow: var(--shadow-sm);
-    padding: 12px;
+    padding: 16px;
+    transition: var(--transition);
   }
   .custom-table tbody tr:hover {
     background-color: var(--white);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
   }
   .custom-table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-align: right;
-    padding: 8px 4px;
-    border-bottom: 1px solid #F1F5F9;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(241, 245, 249, 0.6);
     font-size: 13px;
     white-space: normal;
-    gap: 12px;
+    gap: 16px;
   }
   .custom-table td:last-child {
     border-bottom: none;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px dashed #E2E8F0;
+    justify-content: flex-end;
   }
   .custom-table td[data-label]::before {
     content: attr(data-label);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--gray-text);
     text-align: left;
     flex-shrink: 0;
@@ -1980,4 +2002,13 @@ p {
   padding-top: 16px;
   border-top: 1px solid #f1f5f9;
   cursor: pointer;
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
 }

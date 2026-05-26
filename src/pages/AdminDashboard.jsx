@@ -146,8 +146,10 @@ export default function AdminDashboard({
                   <td>{cust.profile.mobileNumber}</td>
                   <td>{cust.profile.plantCapacity}</td>
                   <td>
-                    <div style={{ fontWeight: 'bold', color: 'var(--dark-blue)' }}>{t.title}</div>
-                    <div style={{ fontSize: '9px', color: 'var(--gray-text)' }}>Category: {t.category}</div>
+                    <div className="flex flex-col text-right sm:text-left">
+                      <div style={{ fontWeight: 'bold', color: 'var(--dark-blue)' }}>{t.title}</div>
+                      <div style={{ fontSize: '9px', color: 'var(--gray-text)' }}>Category: {t.category}</div>
+                    </div>
                   </td>
                   <td><Badge type={t.priority}>{t.priority}</Badge></td>
                   <td><Badge type={t.status}>{t.status}</Badge></td>

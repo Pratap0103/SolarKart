@@ -14,8 +14,7 @@ import {
   ShieldCheck,
   User,
   Lock,
-  X,
-  BatteryCharging
+  X
 } from 'lucide-react';
 
 export default function Sidebar({ activePage, onPageChange, role, unreadNotifCount, isOpen, onClose }) {
@@ -34,7 +33,6 @@ export default function Sidebar({ activePage, onPageChange, role, unreadNotifCou
     { id: 'amc', label: 'Service Plan (AMC)', icon: ShieldCheck },
     { id: 'profile', label: 'My Profile', icon: User }
   ];
-
 
   return (
     <>
@@ -94,3 +92,4 @@ export default function Sidebar({ activePage, onPageChange, role, unreadNotifCou
     </>
   );
 }
+
